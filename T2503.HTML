@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T2503 - Retro Future Project</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #0a1b1a;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+        
+        /* Animated Background */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 80%, #ff6b6b22 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, #4ecdc422 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, #45b7d122 0%, transparent 50%),
+                linear-gradient(135deg, #0a1b1a 0%, #1a2f2a 50%, #0f1f1f 100%);
+        }
+        
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: 
+                linear-gradient(rgba(255, 107, 107, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 107, 107, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 107, 107, 0.03) 2px,
+                rgba(255, 107, 107, 0.03) 4px
+            );
+            animation: scanlineMove 2s linear infinite;
+        }
+        
+        @keyframes scanlineMove {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(4px); }
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            text-align: center;
+        }
+        
+        .hero-logo {
+            position: relative;
+            margin-top: 6rem;
+            margin-bottom: 2rem;
+        }
+        
+        .main-title {
+            font-size: 10.4rem;
+            font-weight: 900;
+            color: #ff6b6b;
+            text-shadow: 
+                0 0 5px #ff6b6b,
+                0 0 11px #ff6b6b,
+                0 0 20px #ff6b6b;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+            letter-spacing: 0.5rem;
+            line-height: 0.8;
+        }
+        
+        @keyframes titleGlow {
+            from { 
+                text-shadow: 
+                    0 0 5px #ff6b6b,
+                    0 0 11px #ff6b6b,
+                    0 0 20px #ff6b6b;
+            }
+            to { 
+                text-shadow: 
+                    0 0 8px #ff6b6b,
+                    0 0 17px #ff6b6b,
+                    0 0 32px #ff6b6b,
+                    0 0 42px #ff1744;
+            }
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: #4ecdc4;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8rem;
+            text-shadow: 0 0 5px #4ecdc4;
+        }
+        
+        .company-logo {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 1.2rem;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+            opacity: 0.8;
+        }
+        
+        .gama-text {
+            color: #45b7d1;
+            text-shadow: 0 0 5px #45b7d1;
+        }
+        
+        /* Mission Statement */
+        .mission-container {
+            width: 1500px;
+            margin: 3rem auto 4rem;
+            padding: 2rem 1rem;
+            background: rgba(255, 107, 107, 0.1);
+            border: 2px solid rgba(255, 107, 107, 0.5);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 0 30px rgba(255, 107, 107, 0.3),
+                inset 0 0 30px rgba(255, 107, 107, 0.1);
+            box-sizing: border-box;
+        }
+        
+        .mission-title {
+            font-size: 2rem;
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+        }
+        
+        .mission-text {
+            font-size: 1.54rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: left;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+        
+        /* Feature Cards Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+            width: 1500px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            box-sizing: border-box;
+        }
+        
+        .feature-card {
+            background: rgba(78, 205, 196, 0.1);
+            border: 2px solid rgba(78, 205, 196, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1, #ff6b6b, #4ecdc4);
+            border-radius: 20px;
+            z-index: -1;
+            animation: borderRotate 3s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 
+                0 20px 40px rgba(78, 205, 196, 0.3),
+                0 0 50px rgba(78, 205, 196, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            color: #4ecdc4;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            text-shadow: 0 0 5px #4ecdc4;
+        }
+        
+        .feature-description {
+            font-size: 1.64rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            text-align: left;
+        }
+        
+        /* Timeline Section */
+        .timeline-section {
+            margin-top: 8rem;
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .timeline-title {
+            text-align: center;
+            font-size: 3rem;
+            color: #45b7d1;
+            margin-bottom: 4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3rem;
+            text-shadow: 0 0 20px #45b7d1;
+        }
+        
+        .timeline-container {
+            max-width: none;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            padding: 0 2rem;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #ff6b6b, #4ecdc4, #45b7d1);
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px currentColor;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin: 3rem 0;
+            opacity: 0;
+            transform: translateX(0) translateY(30px) scale(0.9);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .timeline-item.animate {
+            opacity: 1;
+            transform: translateX(0) translateY(0) scale(1);
+        }
+        
+        .timeline-item.animate-out {
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 1, 0.5);
+        }
+        
+        .timeline-item:nth-child(odd) {
+            transform: translateX(-50px) translateY(30px) scale(0.9);
+        }
+        
+        .timeline-item:nth-child(even) {
+            transform: translateX(50px) translateY(30px) scale(0.9);
+        }
+        
+        .timeline-item:nth-child(odd).animate {
+            transform: translateX(0) translateY(0) scale(1);
+        }
+        
+        .timeline-item:nth-child(even).animate {
+            transform: translateX(0) translateY(0) scale(1);
+        }
+        
+        .timeline-item:nth-child(odd).animate-out {
+            transform: translateX(-50px) translateY(-20px) scale(0.8);
+        }
+        
+        .timeline-item:nth-child(even).animate-out {
+            transform: translateX(50px) translateY(-20px) scale(0.8);
+        }
+        
+        .timeline-content {
+            background: rgba(255, 107, 107, 0.15);
+            border: 2px solid rgba(255, 107, 107, 0.5);
+            border-radius: 15px;
+            padding: 2.6rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            width: 45%;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.2);
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: 0;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 55%;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            border: 4px solid #0a1b1a;
+            border-radius: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 20px #ff6b6b;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -60px;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -60px;
+        }
+        
+        .timeline-phase {
+            font-size: 1.56rem;
+            color: #4ecdc4;
+            margin-bottom: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+        }
+        
+        .timeline-period {
+            font-size: 1.52rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.3rem;
+            font-style: italic;
+        }
+        
+        .timeline-desc {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            font-size: 1.52rem;
+        }
+        
+        /* Floating Elements */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .floating-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            box-shadow: 0 0 10px currentColor;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-dot:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+            background: #ff6b6b;
+        }
+        
+        .floating-dot:nth-child(2) {
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+            background: #4ecdc4;
+        }
+        
+        .floating-dot:nth-child(3) {
+            top: 80%;
+            left: 20%;
+            animation-delay: 4s;
+            background: #45b7d1;
+        }
+        
+        .floating-dot:nth-child(4) {
+            top: 30%;
+            left: 75%;
+            animation-delay: 1s;
+            background: #ff6b6b;
+            width: 3px;
+            height: 3px;
+        }
+        
+        .floating-dot:nth-child(5) {
+            top: 70%;
+            left: 15%;
+            animation-delay: 3s;
+            background: #4ecdc4;
+            width: 2px;
+            height: 2px;
+        }
+        
+        .floating-dot:nth-child(6) {
+            top: 45%;
+            left: 90%;
+            animation-delay: 5s;
+            background: #45b7d1;
+            width: 3px;
+            height: 3px;
+        }
+        
+        .floating-dot:nth-child(7) {
+            top: 15%;
+            left: 60%;
+            animation-delay: 1.5s;
+            background: #ff6b6b;
+            width: 2px;
+            height: 2px;
+        }
+        
+        .floating-dot:nth-child(9) {
+            top: 25%;
+            left: 40%;
+            animation-delay: 2.5s;
+            background: #ff6b6b;
+            width: 2px;
+            height: 2px;
+        }
+        
+        .floating-dot:nth-child(10) {
+            top: 55%;
+            left: 65%;
+            animation-delay: 4.2s;
+            background: #4ecdc4;
+            width: 3px;
+            height: 3px;
+        }
+        
+        .floating-dot:nth-child(11) {
+            top: 35%;
+            left: 25%;
+            animation-delay: 0.8s;
+            background: #45b7d1;
+            width: 2px;
+            height: 2px;
+        }
+        
+        .floating-dot:nth-child(12) {
+            top: 75%;
+            left: 85%;
+            animation-delay: 3.8s;
+            background: #ff6b6b;
+            width: 4px;
+            height: 4px;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: relative;
+            margin-top: 6rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: rgba(10, 27, 26, 0.95);
+            border: 2px solid rgba(255, 107, 107, 0.5);
+            border-radius: 20px;
+            margin: 3% auto;
+            padding: 2.6rem;
+            width: 90%;
+            max-width: 1300px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 
+                0 0 30px rgba(255, 107, 107, 0.3),
+                inset 0 0 30px rgba(255, 107, 107, 0.1);
+            position: relative;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.95rem;
+            border-bottom: 1px solid rgba(255, 107, 107, 0.3);
+            padding-bottom: 1.3rem;
+        }
+        
+        .modal-title {
+            font-size: 2.6rem;
+            color: #ff6b6b;
+            text-transform: uppercase;
+            letter-spacing: 0.26rem;
+            text-shadow: 0 0 13px #ff6b6b;
+        }
+        
+        .close-btn {
+            background: transparent;
+            border: 2px solid rgba(255, 107, 107, 0.5);
+            color: #ff6b6b;
+            font-size: 1.95rem;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 107, 107, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .modal-body {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+        
+        .requirements-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .requirement-item {
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            border-radius: 8px;
+            padding: 1.3rem;
+            margin-bottom: 1.04rem;
+            font-size: 1.24rem;
+            transition: all 0.3s ease;
+        }
+        
+        .requirement-item:hover {
+            background: rgba(78, 205, 196, 0.15);
+            border-color: rgba(78, 205, 196, 0.5);
+            transform: translateX(5px);
+        }
+        
+        .requirement-code {
+            color: #4ecdc4;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        
+        /* Clickable feature card indication */
+        .feature-card.clickable {
+            cursor: pointer;
+        }
+        
+        .feature-card.clickable:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 
+                0 20px 40px rgba(78, 205, 196, 0.4),
+                0 0 50px rgba(78, 205, 196, 0.3);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 4rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .timeline-line {
+                left: 2rem;
+            }
+            
+            .timeline-content {
+                width: calc(100% - 4rem);
+                margin-left: 4rem !important;
+            }
+            
+            .timeline-dot {
+                left: 1.5rem !important;
+                right: auto !important;
+            }
+            
+            .company-logo {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="grid-overlay"></div>
+    <div class="scanlines"></div>
+    
+    <div class="floating-elements">
+        <div class="floating-dot"></div>
+        <div class="floating-dot"></div>
+        <div class="floating-dot"></div>
+        <div class="floating-dot"></div>
+        <div class="floating-dot"></div>
+        <div class="floating-dot"></div>
+        <div class="floating-dot"></div>
+        <div class="floating-dot"></div>
+        <div class="floating-dot"></div>
+        <div class="floating-dot"></div>
+        <div class="floating-dot"></div>
+        <div class="floating-dot"></div>
+    </div>
+    
+    <!-- Modal for Requirements -->
+    <div id="requirementsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">現場需求</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <ul class="requirements-list">
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-4773</span>
+                        [現場需求] [AccountingWK] 補登記取得新會簽到功能
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-5291</span>
+                        [現場需求] [MemberAPP] 電子票券內容新增客製化點數項目
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-5292</span>
+                        [現場需求] [Promotion] 活動規則兼容點數取消功能
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-4183</span>
+                        [現場需求] [Promotion] 客製化點數期限與循環上限
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-5294</span>
+                        [現場需求] [PatronWK] 客製化點數自定義Memo
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-5290</span>
+                        [現場需求] [MemberAPP] APP活動與活動中心新增紅點提示
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-4054</span>
+                        [現場問題] Kiosk摸彩獎項金額調整導致上期領到本期的金額 - 龍虎榜部分
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-5426</span>
+                        [現場需求] [MemberApp] 訪客註冊資料UIUX優化
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-5289</span>
+                        [現場需求] [MemberAPP] 推播可以轉跳到活動頁面
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-5226</span>
+                        [現場需求] A1 珍寶錶底有錢，會員工作站FLOOR不會顯示粉紅人
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-5419</span>
+                        [現場需求] [AccountingWK] 電子票券禮物類型列印收據顯示備註文字
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-5449</span>
+                        [現場問題] CT-ALL-隔日券日期更新優化
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-5437</span>
+                        [現場需求] [NS] 支援會計工作站事件log
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-5181</span>
+                        [現場需求] 會計工作站新增珍寶清鈔功能
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-code">CT-5491</span>
+                        [現場需求] [MemberApp] 延長QRCode掃描登入機台的時間
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <section class="hero-section">
+        <div class="company-logo">
+            <span class="gama-text">Gama</span> Technology
+        </div>
+        
+        <div class="hero-logo">
+            <h1 class="main-title">T2503</h1>
+            <p class="subtitle">持續系統與自我的突破</p>
+        </div>
+        
+        <div class="mission-container">
+            <h3 class="mission-title">舊有傳統的新頁</h3>
+            <p class="mission-text">
+                透過以下數個模組的開發，全面再一次推動舊有人工的產品思維轉換，進入到系統可以更智能、更便利的影響客戶使用，進而延伸到客戶的客戶端體驗，不管在營運上、人力成本上 都可以有進一步的發展。
+            </p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">📈</span>
+                <h3 class="feature-title">新會員升降等設定</h3>
+                <p class="feature-description">玩家不需要登入登出即可更新卡別、透過遊玩時即時更新卡別升降等、時間週期到時,未滿足條件自動降等</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🤖</span>
+                <h3 class="feature-title">舊帶新回饋自動化</h3>
+                <p class="feature-description">原本就有的繁複計算流程，系統全面進行自動化並包含領獎功能</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🎮</span>
+                <h3 class="feature-title">APP闖關任務卡</h3>
+                <p class="feature-description">人工發放的卡片改為進入APP中，全面減輕店家人力，及提升會員體驗</p>
+            </div>
+            
+            <div class="feature-card clickable" id="requirements-card">
+                <span class="feature-icon">⚡</span>
+                <h3 class="feature-title">現場需求響應</h3>
+                <p class="feature-description">列出目前優先的單子，讓各單位快速進行順序排定及開發</p>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            ↓ 向下探索專案時程 ↓
+        </div>
+    </section>
+    
+    <section class="timeline-section">
+        <h2 class="timeline-title">專案執行時程</h2>
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-dot"></div>
+                    <h3 class="timeline-phase">🎯 專案啟動</h3>
+                    <p class="timeline-desc">0721 開始，確立專案目標及範圍。</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-dot"></div>
+                    <h3 class="timeline-phase">🎮 APP闖關任務卡</h3>
+                    <div class="timeline-period">7月中 ~ 10月初</div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-dot"></div>
+                    <h3 class="timeline-phase">📊 新會員升降等設定</h3>
+                    <div class="timeline-period">8月初 ~ 9月中</div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-dot"></div>
+                    <h3 class="timeline-phase">💰 舊帶新回饋自動化計算</h3>
+                    <div class="timeline-period">8月底 ~ 9月底</div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-dot"></div>
+                    <h3 class="timeline-phase">🔧 現場需求處理</h3>
+                    <div class="timeline-period">9月初 ~ 10月中</div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-dot"></div>
+                    <h3 class="timeline-phase">🎯 功能收斂</h3>
+                    <div class="timeline-period">10月初</div>
+                    <p class="timeline-desc">不再進測新功能單子，將剩餘單子進行修復</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-dot"></div>
+                    <h3 class="timeline-phase">🚀 正式發布</h3>
+                    <div class="timeline-period">11月初</div>
+                    <p class="timeline-desc">系統正式上線，開始為用戶提供全新的數位化體驗</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Requirements modal functionality
+        const requirementsCard = document.getElementById('requirements-card');
+        const modal = document.getElementById('requirementsModal');
+        const closeBtn = document.getElementById('closeModal');
+        
+        // Open modal when clicking the requirements card
+        requirementsCard.addEventListener('click', () => {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        });
+        
+        // Close modal when clicking close button
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Close modal when clicking outside of it
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Enhanced scroll effects
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.3;
+            
+            document.querySelector('.background').style.transform = `translate3d(0, ${rate}px, 0)`;
+        });
+        
+        // Scroll-triggered timeline animation with enter/exit effects
+        let timelineAnimationTimeout = {};
+        
+        function animateTimelineOnScroll() {
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const windowHeight = window.innerHeight;
+            const scrollTop = window.pageYOffset;
+            
+            timelineItems.forEach((item, index) => {
+                const itemRect = item.getBoundingClientRect();
+                const itemTop = scrollTop + itemRect.top;
+                const itemBottom = itemTop + itemRect.height;
+                
+                // 更精確的視窗檢測
+                const viewportTop = scrollTop;
+                const viewportBottom = scrollTop + windowHeight;
+                
+                // 檢查元素是否在視窗範圍內（留有緩衝區域）
+                const isInViewport = (itemBottom > viewportTop + 100) && (itemTop < viewportBottom - 100);
+                
+                // 清除之前的timeout
+                if (timelineAnimationTimeout[index]) {
+                    clearTimeout(timelineAnimationTimeout[index]);
+                }
+                
+                if (isInViewport) {
+                    // 元素進入視窗
+                    timelineAnimationTimeout[index] = setTimeout(() => {
+                        item.classList.remove('animate-out');
+                        item.classList.add('animate');
+                    }, index * 40);
+                } else {
+                    // 元素離開視窗
+                    item.classList.remove('animate');
+                    item.classList.add('animate-out');
+                }
+            });
+        }
+        
+        // 監聽滾動事件
+        window.addEventListener('scroll', animateTimelineOnScroll);
+        
+        // 頁面載入時也檢查一次
+        window.addEventListener('load', animateTimelineOnScroll);
+        
+        // Interactive hover effects for feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.zIndex = '100';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.zIndex = '1';
+            });
+        });
+        
+        // Dynamic grid animation
+        const gridOverlay = document.querySelector('.grid-overlay');
+        let animationSpeed = 20;
+        
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            animationSpeed = 10 + (x + y) * 20;
+            gridOverlay.style.animationDuration = `${animationSpeed}s`;
+        });
+        
+        // Glitch effect on title
+        const title = document.querySelector('.main-title');
+        const originalText = title.textContent;
+        
+        setInterval(() => {
+            if (Math.random() < 0.1) {
+                title.textContent = 'T25∅3';
+                setTimeout(() => {
+                    title.textContent = originalText;
+                }, 100);
+            }
+        }, 3000);
+        
+        // Console easter egg
+        console.log(`
+        ████████╗██████╗ ███████╗ ██████╗ ██████╗ 
+        ╚══██╔══╝╚════██╗██╔════╝██╔═████╗╚════██╗
+           ██║    █████╔╝███████╗██║██╔██║ █████╔╝
+           ██║   ██╔═══╝ ╚════██║████╔╝██║██╔═══╝ 
+           ██║   ███████╗███████║╚██████╔╝███████╗
+           ╚═╝   ╚══════╝╚══════╝ ╚═════╝ ╚══════╝
+        
+        🚀 Welcome to the future of meeting room management
+        📡 Gama Technology - Digital Revolution
+        `);
+    </script>
+</body>
+</html>
