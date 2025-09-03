@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T2503 - Retro Future Project</title>
+    <title>T2503 - Space Mission Project</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;700;900&display=swap');
         
         * {
             margin: 0;
@@ -14,15 +14,38 @@
         }
         
         body {
-            font-family: 'Orbitron', monospace;
-            background: #0a1b1a;
+            font-family: 'Exo 2', 'Orbitron', monospace;
+            background: #000;
             color: #ffffff;
             overflow-x: hidden;
             cursor: crosshair;
         }
         
-        /* Animated Background */
-        .background {
+        /* Starfield Background */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: 
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: sparkle 20s linear infinite;
+        }
+        
+        @keyframes sparkle {
+            from { transform: translateX(0); }
+            to { transform: translateX(-200px); }
+        }
+        
+        .nebula {
             position: fixed;
             top: 0;
             left: 0;
@@ -30,52 +53,72 @@
             height: 100%;
             z-index: -1;
             background: 
-                radial-gradient(circle at 20% 80%, #ff6b6b22 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, #4ecdc422 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, #45b7d122 0%, transparent 50%),
-                linear-gradient(135deg, #0a1b1a 0%, #1a2f2a 50%, #0f1f1f 100%);
+                radial-gradient(ellipse at 30% 20%, rgba(138, 43, 226, 0.3) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 60%, rgba(30, 144, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 20% 80%, rgba(255, 20, 147, 0.25) 0%, transparent 40%);
+            animation: nebulaMove 30s ease-in-out infinite alternate;
         }
         
-        .grid-overlay {
+        @keyframes nebulaMove {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.1) rotate(5deg); }
+        }
+        
+        /* Game UI Elements */
+        .game-ui {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background-image: 
-                linear-gradient(rgba(255, 107, 107, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 107, 107, 0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: gridMove 20s linear infinite;
-        }
-        
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-        
-        .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
+            right: 0;
+            z-index: 100;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             pointer-events: none;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(255, 107, 107, 0.03) 2px,
-                rgba(255, 107, 107, 0.03) 4px
-            );
-            animation: scanlineMove 2s linear infinite;
         }
         
-        @keyframes scanlineMove {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(4px); }
+        .ui-panel {
+            background: rgba(0, 20, 40, 0.8);
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-family: 'Orbitron', monospace;
+            font-size: 12px;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.3),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+        
+        .health-bar {
+            width: 150px;
+            height: 8px;
+            background: rgba(255, 0, 0, 0.3);
+            border: 1px solid #ff0040;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0040, #ff4080);
+            width: 85%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Main Content */
+        .main-container {
+            position: relative;
+            z-index: 10;
         }
         
         /* Hero Section */
@@ -87,518 +130,532 @@
             align-items: center;
             position: relative;
             text-align: center;
+            padding: 0 20px;
         }
         
-        .hero-logo {
+        .game-logo {
             position: relative;
-            margin-top: 6rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
         
         .main-title {
-            font-size: 10.4rem;
+            font-size: clamp(4rem, 12vw, 12rem);
             font-weight: 900;
-            color: #ff6b6b;
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ffff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite, titleFloat 6s ease-in-out infinite;
             text-shadow: 
-                0 0 5px #ff6b6b,
-                0 0 11px #ff6b6b,
-                0 0 20px #ff6b6b;
-            animation: titleGlow 3s ease-in-out infinite alternate;
-            letter-spacing: 0.5rem;
-            line-height: 0.8;
+                0 0 30px rgba(0, 255, 255, 0.5),
+                0 0 60px rgba(255, 0, 255, 0.3);
+            letter-spacing: 0.2em;
+            position: relative;
         }
         
-        @keyframes titleGlow {
-            from { 
-                text-shadow: 
-                    0 0 5px #ff6b6b,
-                    0 0 11px #ff6b6b,
-                    0 0 20px #ff6b6b;
-            }
-            to { 
-                text-shadow: 
-                    0 0 8px #ff6b6b,
-                    0 0 17px #ff6b6b,
-                    0 0 32px #ff6b6b,
-                    0 0 42px #ff1744;
-            }
+        .main-title::before {
+            content: 'T2503';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(45deg, #ff0040, #00ff80);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glitch 4s linear infinite;
+            opacity: 0;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.02); }
+        }
+        
+        @keyframes glitch {
+            0%, 95%, 100% { opacity: 0; }
+            96%, 97% { opacity: 0.8; transform: translate(2px, -2px); }
+            98%, 99% { opacity: 0.6; transform: translate(-2px, 2px); }
         }
         
         .subtitle {
-            font-size: 1.5rem;
-            color: #4ecdc4;
-            margin-bottom: 3rem;
+            font-size: clamp(1rem, 3vw, 2rem);
+            color: #00ffff;
+            margin-bottom: 4rem;
             text-transform: uppercase;
-            letter-spacing: 0.8rem;
-            text-shadow: 0 0 5px #4ecdc4;
+            letter-spacing: 0.3em;
+            animation: neonBlink 2s ease-in-out infinite alternate;
         }
         
-        .company-logo {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            font-size: 1.2rem;
-            color: #ffffff;
-            text-transform: uppercase;
-            letter-spacing: 0.2rem;
-            opacity: 0.8;
+        @keyframes neonBlink {
+            from { 
+                text-shadow: 
+                    0 0 5px #00ffff,
+                    0 0 10px #00ffff,
+                    0 0 15px #00ffff;
+            }
+            to { 
+                text-shadow: 
+                    0 0 10px #00ffff,
+                    0 0 20px #00ffff,
+                    0 0 30px #00ffff,
+                    0 0 40px #0080ff;
+            }
         }
         
-        .gama-text {
-            color: #45b7d1;
-            text-shadow: 0 0 5px #45b7d1;
-        }
-        
-        /* Mission Statement */
-        .mission-container {
-            width: 1500px;
-            margin: 3rem auto 4rem;
-            padding: 2rem 1rem;
-            background: rgba(255, 107, 107, 0.1);
-            border: 2px solid rgba(255, 107, 107, 0.5);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            box-shadow: 
-                0 0 30px rgba(255, 107, 107, 0.3),
-                inset 0 0 30px rgba(255, 107, 107, 0.1);
-            box-sizing: border-box;
-        }
-        
-        .mission-title {
-            font-size: 2rem;
-            color: #ff6b6b;
-            margin-bottom: 1rem;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 0.2rem;
-        }
-        
-        .mission-text {
-            font-size: 1.54rem;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.9);
-            text-align: left;
-            padding-left: 2rem;
-            padding-right: 2rem;
-        }
-        
-        /* Feature Cards Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 3rem;
-            width: 1500px;
-            margin: 0 auto;
-            padding: 0 1rem;
-            box-sizing: border-box;
-        }
-        
-        .feature-card {
-            background: rgba(78, 205, 196, 0.1);
-            border: 2px solid rgba(78, 205, 196, 0.5);
+        /* Mission Briefing */
+        .mission-briefing {
+            background: rgba(0, 20, 40, 0.9);
+            border: 3px solid rgba(0, 255, 255, 0.6);
             border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
+            padding: 3rem;
+            margin: 2rem auto 4rem;
+            max-width: 1200px;
             position: relative;
             backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            overflow: hidden;
+            box-shadow: 
+                0 0 50px rgba(0, 255, 255, 0.3),
+                inset 0 0 50px rgba(0, 255, 255, 0.1);
         }
         
-        .feature-card::before {
+        .mission-briefing::before {
             content: '';
             position: absolute;
             top: -2px;
             left: -2px;
             right: -2px;
             bottom: -2px;
-            background: linear-gradient(45deg, #4ecdc4, #45b7d1, #ff6b6b, #4ecdc4);
-            border-radius: 20px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ffff);
+            border-radius: 22px;
             z-index: -1;
-            animation: borderRotate 3s linear infinite;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            animation: borderPulse 4s linear infinite;
         }
         
-        .feature-card:hover::before {
+        @keyframes borderPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .briefing-title {
+            font-size: 2.5rem;
+            color: #ffff00;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 20px #ffff00;
+        }
+        
+        .briefing-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: left;
+        }
+        
+        /* Character Selection Style Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .character-card {
+            background: rgba(10, 10, 30, 0.8);
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(15px);
+            overflow: hidden;
+        }
+        
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent,
+                rgba(0, 255, 255, 0.4),
+                transparent,
+                rgba(255, 0, 255, 0.4),
+                transparent
+            );
+            animation: rotate 4s linear infinite;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .character-card:hover::before {
             opacity: 1;
         }
         
-        @keyframes borderRotate {
+        @keyframes rotate {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
         
-        .feature-card:hover {
-            transform: translateY(-10px) scale(1.05);
+        .character-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            border-color: rgba(0, 255, 255, 0.8);
             box-shadow: 
-                0 20px 40px rgba(78, 205, 196, 0.3),
-                0 0 50px rgba(78, 205, 196, 0.2);
+                0 25px 50px rgba(0, 255, 255, 0.4),
+                0 0 100px rgba(0, 255, 255, 0.2),
+                inset 0 0 50px rgba(0, 255, 255, 0.1);
         }
         
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+        .character-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
             display: block;
-            filter: drop-shadow(0 0 10px currentColor);
+            filter: drop-shadow(0 0 20px currentColor);
+            animation: iconFloat 3s ease-in-out infinite;
         }
         
-        .feature-title {
-            font-size: 1.3rem;
-            color: #4ecdc4;
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .character-name {
+            font-size: 1.5rem;
+            color: #00ffff;
             margin-bottom: 1rem;
             text-transform: uppercase;
-            letter-spacing: 0.1rem;
-            text-shadow: 0 0 5px #4ecdc4;
+            letter-spacing: 0.15em;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 10px #00ffff;
         }
         
-        .feature-description {
-            font-size: 1.64rem;
-            color: rgba(255, 255, 255, 0.9);
+        .character-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-name {
+            font-size: 0.9rem;
+            color: #ffff00;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-bar {
+            width: 60px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+            border-radius: 4px;
+        }
+        
+        .character-description {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
             line-height: 1.6;
             text-align: left;
         }
         
-        /* Timeline Section */
-        .timeline-section {
+        /* Timeline as Game Levels */
+        .levels-section {
             margin-top: 8rem;
             padding: 4rem 2rem;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+            position: relative;
         }
         
-        .timeline-title {
+        .levels-title {
             text-align: center;
-            font-size: 3rem;
-            color: #45b7d1;
+            font-size: 4rem;
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 4rem;
             text-transform: uppercase;
             letter-spacing: 0.3rem;
-            text-shadow: 0 0 20px #45b7d1;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
         }
         
-        .timeline-container {
-            max-width: none;
-            width: 100%;
-            margin: 0 auto;
+        .level-path {
             position: relative;
-            padding: 0 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
         
+        /* Timeline line on the left */
         .timeline-line {
             position: absolute;
-            left: 50%;
+            left: 30px;
             top: 0;
             bottom: 0;
             width: 4px;
-            background: linear-gradient(to bottom, #ff6b6b, #4ecdc4, #45b7d1);
-            transform: translateX(-50%);
-            box-shadow: 0 0 10px currentColor;
+            background: linear-gradient(to bottom, #ff00ff, #00ffff, #ffff00);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+            border-radius: 2px;
         }
         
-        .timeline-item {
+        .level-node {
             position: relative;
-            margin: 3rem 0;
+            margin: 4rem 0;
             opacity: 0;
-            transform: translateX(0) translateY(30px) scale(0.9);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .timeline-item.animate {
+        .level-node.active {
             opacity: 1;
-            transform: translateX(0) translateY(0) scale(1);
+            transform: translateY(0);
         }
         
-        .timeline-item.animate-out {
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 1, 0.5);
-        }
-        
-        .timeline-item:nth-child(odd) {
-            transform: translateX(-50px) translateY(30px) scale(0.9);
-        }
-        
-        .timeline-item:nth-child(even) {
-            transform: translateX(50px) translateY(30px) scale(0.9);
-        }
-        
-        .timeline-item:nth-child(odd).animate {
-            transform: translateX(0) translateY(0) scale(1);
-        }
-        
-        .timeline-item:nth-child(even).animate {
-            transform: translateX(0) translateY(0) scale(1);
-        }
-        
-        .timeline-item:nth-child(odd).animate-out {
-            transform: translateX(-50px) translateY(-20px) scale(0.8);
-        }
-        
-        .timeline-item:nth-child(even).animate-out {
-            transform: translateX(50px) translateY(-20px) scale(0.8);
-        }
-        
-        .timeline-content {
-            background: rgba(255, 107, 107, 0.15);
-            border: 2px solid rgba(255, 107, 107, 0.5);
+        .level-content {
+            background: rgba(0, 20, 40, 0.9);
+            border: 2px solid rgba(0, 255, 255, 0.5);
             border-radius: 15px;
-            padding: 2.6rem;
-            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            margin-left: 80px;
             position: relative;
-            width: 45%;
-            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.2);
+            backdrop-filter: blur(10px);
         }
         
-        .timeline-item:nth-child(odd) .timeline-content {
-            margin-left: 0;
-        }
-        
-        .timeline-item:nth-child(even) .timeline-content {
-            margin-left: 55%;
-        }
-        
-        .timeline-dot {
+        .level-content::before {
+            content: '';
             position: absolute;
+            left: -50px;
             top: 50%;
+            transform: translateY(-50%);
             width: 20px;
             height: 20px;
-            background: #ff6b6b;
-            border: 4px solid #0a1b1a;
+            background: radial-gradient(circle, #00ffff 40%, transparent 41%);
+            border: 3px solid #00ffff;
             border-radius: 50%;
+            box-shadow: 0 0 20px #00ffff;
+        }
+        
+        .level-number {
+            position: absolute;
+            left: -75px;
+            top: 50%;
             transform: translateY(-50%);
-            box-shadow: 0 0 20px #ff6b6b;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #000;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.6);
         }
         
-        .timeline-item:nth-child(odd) .timeline-dot {
-            right: -60px;
-        }
-        
-        .timeline-item:nth-child(even) .timeline-dot {
-            left: -60px;
-        }
-        
-        .timeline-phase {
-            font-size: 1.56rem;
-            color: #4ecdc4;
-            margin-bottom: 0.65rem;
+        .level-title {
+            font-size: 1.8rem;
+            color: #ffff00;
+            margin-bottom: 0.5rem;
             text-transform: uppercase;
-            letter-spacing: 0.1rem;
+            font-family: 'Orbitron', monospace;
         }
         
-        .timeline-period {
-            font-size: 1.52rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 1.3rem;
+        .level-period {
+            font-size: 1rem;
+            color: #00ffff;
+            margin-bottom: 1rem;
             font-style: italic;
         }
         
-        .timeline-desc {
+        .level-description {
             color: rgba(255, 255, 255, 0.9);
             line-height: 1.6;
-            font-size: 1.52rem;
+            font-size: 1.1rem;
         }
         
-        /* Floating Elements */
-        .floating-elements {
-            position: fixed;
-            top: 0;
-            left: 0;
+        /* Mission Complete Section */
+        .mission-complete-section {
+            padding: 6rem 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            text-align: center;
+            position: relative;
+        }
+        
+        .mission-complete {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .complete-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(45deg, #ffff00, #ff00ff, #00ffff, #ffff00);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 2s ease-in-out infinite, completePulse 3s ease-in-out infinite;
+            text-shadow: 
+                0 0 30px rgba(255, 255, 0, 0.6),
+                0 0 60px rgba(255, 0, 255, 0.4),
+                0 0 90px rgba(0, 255, 255, 0.3);
+            letter-spacing: 0.3em;
+            margin: 0;
+        }
+        
+        @keyframes completePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .complete-effects {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 5;
         }
         
-        .floating-dot {
+        .star-burst {
             position: absolute;
             width: 4px;
             height: 4px;
-            background: #ff6b6b;
+            background: #ffff00;
             border-radius: 50%;
-            box-shadow: 0 0 10px currentColor;
-            animation: float 6s ease-in-out infinite;
+            box-shadow: 0 0 20px #ffff00;
         }
         
-        .floating-dot:nth-child(1) {
+        .star-burst:nth-child(1) {
             top: 20%;
             left: 10%;
+            animation: starTwinkle 2s ease-in-out infinite;
             animation-delay: 0s;
-            background: #ff6b6b;
         }
         
-        .floating-dot:nth-child(2) {
-            top: 60%;
-            left: 80%;
-            animation-delay: 2s;
-            background: #4ecdc4;
-        }
-        
-        .floating-dot:nth-child(3) {
-            top: 80%;
-            left: 20%;
-            animation-delay: 4s;
-            background: #45b7d1;
-        }
-        
-        .floating-dot:nth-child(4) {
+        .star-burst:nth-child(2) {
             top: 30%;
-            left: 75%;
-            animation-delay: 1s;
-            background: #ff6b6b;
-            width: 3px;
-            height: 3px;
+            right: 15%;
+            animation: starTwinkle 2s ease-in-out infinite;
+            animation-delay: 0.7s;
         }
         
-        .floating-dot:nth-child(5) {
-            top: 70%;
-            left: 15%;
-            animation-delay: 3s;
-            background: #4ecdc4;
-            width: 2px;
-            height: 2px;
+        .star-burst:nth-child(3) {
+            bottom: 25%;
+            left: 20%;
+            animation: starTwinkle 2s ease-in-out infinite;
+            animation-delay: 1.4s;
         }
         
-        .floating-dot:nth-child(6) {
-            top: 45%;
-            left: 90%;
-            animation-delay: 5s;
-            background: #45b7d1;
-            width: 3px;
-            height: 3px;
+        @keyframes starTwinkle {
+            0%, 100% { 
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.5);
+                box-shadow: 0 0 30px #ffff00;
+            }
         }
         
-        .floating-dot:nth-child(7) {
-            top: 15%;
-            left: 60%;
-            animation-delay: 1.5s;
-            background: #ff6b6b;
-            width: 2px;
-            height: 2px;
-        }
-        
-        .floating-dot:nth-child(9) {
-            top: 25%;
-            left: 40%;
-            animation-delay: 2.5s;
-            background: #ff6b6b;
-            width: 2px;
-            height: 2px;
-        }
-        
-        .floating-dot:nth-child(10) {
-            top: 55%;
-            left: 65%;
-            animation-delay: 4.2s;
-            background: #4ecdc4;
-            width: 3px;
-            height: 3px;
-        }
-        
-        .floating-dot:nth-child(11) {
-            top: 35%;
-            left: 25%;
-            animation-delay: 0.8s;
-            background: #45b7d1;
-            width: 2px;
-            height: 2px;
-        }
-        
-        .floating-dot:nth-child(12) {
-            top: 75%;
-            left: 85%;
-            animation-delay: 3.8s;
-            background: #ff6b6b;
-            width: 4px;
-            height: 4px;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        /* Scroll Indicator */
-        .scroll-indicator {
-            position: relative;
-            margin-top: 6rem;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1rem;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        /* Modal Styles */
-        .modal {
+        /* Modal with Game Style */
+        .game-modal {
             display: none;
             position: fixed;
-            z-index: 1000;
+            z-index: 2000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
         }
         
         .modal-content {
-            background: rgba(10, 27, 26, 0.95);
-            border: 2px solid rgba(255, 107, 107, 0.5);
+            background: rgba(0, 20, 40, 0.95);
+            border: 3px solid rgba(0, 255, 255, 0.7);
             border-radius: 20px;
-            margin: 3% auto;
-            padding: 2.6rem;
+            margin: 2% auto;
+            padding: 3rem;
             width: 90%;
             max-width: 1300px;
-            max-height: 85vh;
+            max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 
-                0 0 30px rgba(255, 107, 107, 0.3),
-                inset 0 0 30px rgba(255, 107, 107, 0.1);
             position: relative;
+            box-shadow: 
+                0 0 100px rgba(0, 255, 255, 0.5),
+                inset 0 0 50px rgba(0, 255, 255, 0.1);
         }
         
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.95rem;
-            border-bottom: 1px solid rgba(255, 107, 107, 0.3);
-            padding-bottom: 1.3rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            padding-bottom: 1rem;
         }
         
         .modal-title {
-            font-size: 2.6rem;
-            color: #ff6b6b;
+            font-size: 3.25rem;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-transform: uppercase;
-            letter-spacing: 0.26rem;
-            text-shadow: 0 0 13px #ff6b6b;
+            letter-spacing: 0.2rem;
+            font-family: 'Orbitron', monospace;
         }
         
         .close-btn {
             background: transparent;
-            border: 2px solid rgba(255, 107, 107, 0.5);
-            color: #ff6b6b;
-            font-size: 1.95rem;
-            width: 52px;
-            height: 52px;
+            border: 2px solid #ff0040;
+            color: #ff0040;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
         }
         
         .close-btn:hover {
-            background: rgba(255, 107, 107, 0.2);
+            background: rgba(255, 0, 64, 0.2);
             transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
-        }
-        
-        .modal-body {
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.6;
+            box-shadow: 0 0 20px #ff0040;
         }
         
         .requirements-list {
@@ -607,43 +664,122 @@
         }
         
         .requirement-item {
-            background: rgba(78, 205, 196, 0.1);
-            border: 1px solid rgba(78, 205, 196, 0.3);
+            background: rgba(0, 40, 80, 0.6);
+            border-left: 4px solid #00ffff;
             border-radius: 8px;
-            padding: 1.3rem;
-            margin-bottom: 1.04rem;
-            font-size: 1.24rem;
+            padding: 1.95rem;
+            margin-bottom: 1.3rem;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .requirement-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        
+        .requirement-item:hover::before {
+            transform: translateX(100%);
         }
         
         .requirement-item:hover {
-            background: rgba(78, 205, 196, 0.15);
-            border-color: rgba(78, 205, 196, 0.5);
-            transform: translateX(5px);
+            background: rgba(0, 40, 80, 0.8);
+            border-left-color: #ff00ff;
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.3);
         }
         
         .requirement-code {
-            color: #4ecdc4;
+            color: #ffff00;
             font-weight: bold;
-            margin-right: 0.5rem;
+            font-family: 'Orbitron', monospace;
+            margin-right: 1rem;
+            font-size: 1.43rem;
         }
         
-        /* Clickable feature card indication */
-        .feature-card.clickable {
-            cursor: pointer;
+        .requirement-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.3rem;
         }
         
-        .feature-card.clickable:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 
-                0 20px 40px rgba(78, 205, 196, 0.4),
-                0 0 50px rgba(78, 205, 196, 0.3);
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: relative;
+            margin-top: 4rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes scrollPulse {
+            0%, 100% { 
+                opacity: 0.6;
+                transform: translateY(0);
+            }
+            50% { 
+                opacity: 1;
+                transform: translateY(5px);
+            }
+        }
+        
+        /* Floating Elements */
+        .space-debris {
+            position: fixed;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .debris {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: debris-float 15s linear infinite;
+        }
+        
+        @keyframes debris-float {
+            0% {
+                transform: translate(0, 100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(50px, -100px) rotate(360deg);
+                opacity: 0;
+            }
         }
         
         /* Responsive Design */
         @media (max-width: 768px) {
+            .game-ui {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .ui-panel {
+                font-size: 10px;
+                padding: 8px 12px;
+            }
+            
             .main-title {
-                font-size: 4rem;
+                font-size: clamp(3rem, 15vw, 8rem);
             }
             
             .features-grid {
@@ -651,255 +787,375 @@
                 gap: 2rem;
             }
             
+            .level-content {
+                margin-left: 100px;
+                padding: 2rem;
+            }
+            
+            .level-number {
+                left: -85px;
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            
             .timeline-line {
-                left: 2rem;
+                left: 50px;
             }
             
-            .timeline-content {
-                width: calc(100% - 4rem);
-                margin-left: 4rem !important;
-            }
-            
-            .timeline-dot {
-                left: 1.5rem !important;
-                right: auto !important;
-            }
-            
-            .company-logo {
-                position: relative;
-                top: auto;
-                right: auto;
-                margin-top: 2rem;
+            .levels-title {
+                font-size: 2.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="background"></div>
-    <div class="grid-overlay"></div>
-    <div class="scanlines"></div>
+    <div class="starfield"></div>
+    <div class="nebula"></div>
     
-    <div class="floating-elements">
-        <div class="floating-dot"></div>
-        <div class="floating-dot"></div>
-        <div class="floating-dot"></div>
-        <div class="floating-dot"></div>
-        <div class="floating-dot"></div>
-        <div class="floating-dot"></div>
-        <div class="floating-dot"></div>
-        <div class="floating-dot"></div>
-        <div class="floating-dot"></div>
-        <div class="floating-dot"></div>
-        <div class="floating-dot"></div>
-        <div class="floating-dot"></div>
+    <!-- Game UI -->
+    <div class="game-ui">
+        <div class="ui-panel">
+            <div>STATUS: MISSION ACTIVE</div>
+            <div class="health-bar">
+                <div class="health-fill"></div>
+            </div>
+        </div>
+        <div class="ui-panel">
+            GAMA TECHNOLOGY
+        </div>
+    </div>
+    
+    <!-- Space Debris -->
+    <div class="space-debris" id="debris-container"></div>
+    
+    <div class="main-container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="game-logo">
+                <h1 class="main-title">T2503</h1>
+                <p class="subtitle">持續系統與自我的突破</p>
+            </div>
+            
+            <div class="mission-briefing">
+                <h2 class="briefing-title">任務簡報</h2>
+                <p class="briefing-text">
+                    透過以下數個模組的開發，全面再一次推動舊有人工的產品思維轉換，進入到系統可以更智能、更便利的影響客戶使用，進而延伸到客戶的客戶端體驗，不管在營運上、人力成本上都可以有進一步的發展。
+                </p>
+            </div>
+            
+            <!-- Character Selection Style Features -->
+            <div class="features-grid">
+                <div class="character-card">
+                    <span class="character-icon">📈</span>
+                    <h3 class="character-name">升降等系統</h3>
+                    <div class="character-stats">
+                        <div class="stat">
+                            <div class="stat-name">智能</div>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 90%;"></div>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-name">便利</div>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-name">自動</div>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 95%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="character-description">玩家不需要登入登出即可更新卡別、透過遊玩時即時更新卡別升降等、時間週期到時,未滿足條件自動降等</p>
+                </div>
+                
+                <div class="character-card">
+                    <span class="character-icon">🤖</span>
+                    <h3 class="character-name">自動化回饋</h3>
+                    <div class="character-stats">
+                        <div class="stat">
+                            <div class="stat-name">精準</div>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 95%;"></div>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-name">速度</div>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 88%;"></div>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-name">可靠</div>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 92%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="character-description">原本就有的繁複計算流程，系統全面進行自動化並包含領獎功能</p>
+                </div>
+                
+                <div class="character-card">
+                    <span class="character-icon">🎮</span>
+                    <h3 class="character-name">闖關任務</h3>
+                    <div class="character-stats">
+                        <div class="stat">
+                            <div class="stat-name">互動</div>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 98%;"></div>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-name">體驗</div>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 94%;"></div>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-name">創新</div>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 96%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="character-description">人工發放的卡片改為進入APP中，全面減輕店家人力，及提升會員體驗</p>
+                </div>
+                
+                <div class="character-card" id="requirements-card" style="cursor: pointer;">
+                    <span class="character-icon">⚡</span>
+                    <h3 class="character-name">現場需求修正</h3>
+                    <div class="character-stats">
+                        <div class="stat">
+                            <div class="stat-name">響應</div>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 99%;"></div>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-name">優先</div>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 87%;"></div>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-name">效果</div>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 91%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="character-description">列出目前優先的單子，讓各單位快速進行順序排定及開發</p>
+                </div>
+            </div>
+            
+            <div class="scroll-indicator">
+                ▼ 繼續探索任務關卡 ▼
+            </div>
+        </section>
+        
+        <!-- Timeline as Game Levels -->
+        <section class="levels-section">
+            <h2 class="levels-title">MISSION LEVELS</h2>
+            <div class="level-path">
+                <div class="timeline-line"></div>
+                
+                <div class="level-node">
+                    <div class="level-number">1</div>
+                    <div class="level-content">
+                        <h3 class="level-title">🎯 任務啟動</h3>
+                        <p class="level-description">0721 開始，確立專案目標及範圍。</p>
+                    </div>
+                </div>
+                
+                <div class="level-node">
+                    <div class="level-number">2</div>
+                    <div class="level-content">
+                        <h3 class="level-title">🎮 APP闖關任務卡</h3>
+                        <p class="level-period">7月中 ~ 10月初</p>
+                        <p class="level-description">將傳統人工發放的任務卡片數位化，提升玩家體驗並減輕店家工作負擔。</p>
+                    </div>
+                </div>
+                
+                <div class="level-node">
+                    <div class="level-number">3</div>
+                    <div class="level-content">
+                        <h3 class="level-title">📊 新會員升降等設定</h3>
+                        <p class="level-period">8月初 ~ 9月中</p>
+                        <p class="level-description">建立智能化的會員等級系統，實現即時更新與自動降等機制。</p>
+                    </div>
+                </div>
+                
+                <div class="level-node">
+                    <div class="level-number">4</div>
+                    <div class="level-content">
+                        <h3 class="level-title">💰 舊帶新回饋自動化</h3>
+                        <p class="level-period">8月底 ~ 9月底</p>
+                        <p class="level-description">將複雜的推薦獎勵計算流程完全自動化，包含獎勵發放功能。</p>
+                    </div>
+                </div>
+                
+                <div class="level-node">
+                    <div class="level-number">5</div>
+                    <div class="level-content">
+                        <h3 class="level-title">🔧 現場需求處理</h3>
+                        <p class="level-period">9月初 ~ 10月中</p>
+                        <p class="level-description">快速響應並處理各部門提出的緊急需求與系統優化。</p>
+                    </div>
+                </div>
+                
+                <div class="level-node">
+                    <div class="level-number">6</div>
+                    <div class="level-content">
+                        <h3 class="level-title">🎯 功能收斂</h3>
+                        <p class="level-period">10月初</p>
+                        <p class="level-description">停止新功能開發，專注於現有功能的bug修復與優化。</p>
+                    </div>
+                </div>
+                
+                <div class="level-node">
+                    <div class="level-number">7</div>
+                    <div class="level-content">
+                        <h3 class="level-title">🚀 FINAL LAUNCH</h3>
+                        <p class="level-period">11月初 ~ 11月中</p>
+                        <p class="level-description">版本正式發佈，進行相關上線準備</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Mission Complete Section -->
+        <section class="mission-complete-section">
+            <div class="mission-complete">
+                <h2 class="complete-title">MISSION COMPLETE!!</h2>
+                <div class="complete-effects">
+                    <div class="star-burst"></div>
+                    <div class="star-burst"></div>
+                    <div class="star-burst"></div>
+                </div>
+            </div>
+        </section>
     </div>
     
     <!-- Modal for Requirements -->
-    <div id="requirementsModal" class="modal">
+    <div id="requirementsModal" class="game-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">現場需求</h2>
+                <h2 class="modal-title">需求處理清單</h2>
                 <button class="close-btn" id="closeModal">&times;</button>
             </div>
             <div class="modal-body">
                 <ul class="requirements-list">
                     <li class="requirement-item">
                         <span class="requirement-code">CT-4773</span>
-                        [現場需求] [AccountingWK] 補登記取得新會簽到功能
+                        <span class="requirement-text">[現場需求] [AccountingWK] 補登記取得新會簽到功能</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-5291</span>
-                        [現場需求] [MemberAPP] 電子票券內容新增客製化點數項目
+                        <span class="requirement-text">[現場需求] [MemberAPP] 電子票券內容新增客製化點數項目</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-5292</span>
-                        [現場需求] [Promotion] 活動規則兼容點數取消功能
+                        <span class="requirement-text">[現場需求] [Promotion] 活動規則兼容點數取消功能</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-4183</span>
-                        [現場需求] [Promotion] 客製化點數期限與循環上限
+                        <span class="requirement-text">[現場需求] [Promotion] 客製化點數期限與循環上限</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-5294</span>
-                        [現場需求] [PatronWK] 客製化點數自定義Memo
+                        <span class="requirement-text">[現場需求] [PatronWK] 客製化點數自定義Memo</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-5290</span>
-                        [現場需求] [MemberAPP] APP活動與活動中心新增紅點提示
+                        <span class="requirement-text">[現場需求] [MemberAPP] APP活動與活動中心新增紅點提示</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-4054</span>
-                        [現場問題] Kiosk摸彩獎項金額調整導致上期領到本期的金額 - 龍虎榜部分
+                        <span class="requirement-text">[現場問題] Kiosk摸彩獎項金額調整導致上期領到本期的金額 - 龍虎榜部分</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-5426</span>
-                        [現場需求] [MemberApp] 訪客註冊資料UIUX優化
+                        <span class="requirement-text">[現場需求] [MemberApp] 訪客註冊資料UIUX優化</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-5289</span>
-                        [現場需求] [MemberAPP] 推播可以轉跳到活動頁面
+                        <span class="requirement-text">[現場需求] [MemberAPP] 推播可以轉跳到活動頁面</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-5226</span>
-                        [現場需求] A1 珍寶錶底有錢，會員工作站FLOOR不會顯示粉紅人
+                        <span class="requirement-text">[現場需求] A1 珍寶錶底有錢，會員工作站FLOOR不會顯示粉紅人</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-5419</span>
-                        [現場需求] [AccountingWK] 電子票券禮物類型列印收據顯示備註文字
+                        <span class="requirement-text">[現場需求] [AccountingWK] 電子票券禮物類型列印收據顯示備註文字</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-5449</span>
-                        [現場問題] CT-ALL-隔日券日期更新優化
+                        <span class="requirement-text">[現場問題] CT-ALL-隔日券日期更新優化</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-5437</span>
-                        [現場需求] [NS] 支援會計工作站事件log
+                        <span class="requirement-text">[現場需求] [NS] 支援會計工作站事件log</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-5181</span>
-                        [現場需求] 會計工作站新增珍寶清鈔功能
+                        <span class="requirement-text">[現場需求] 會計工作站新增珍寶清鈔功能</span>
                     </li>
                     <li class="requirement-item">
                         <span class="requirement-code">CT-5491</span>
-                        [現場需求] [MemberApp] 延長QRCode掃描登入機台的時間
+                        <span class="requirement-text">[現場需求] [MemberApp] 延長QRCode掃描登入機台的時間</span>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
-    
-    <section class="hero-section">
-        <div class="company-logo">
-            <span class="gama-text">Gama</span> Technology
-        </div>
-        
-        <div class="hero-logo">
-            <h1 class="main-title">T2503</h1>
-            <p class="subtitle">持續系統與自我的突破</p>
-        </div>
-        
-        <div class="mission-container">
-            <h3 class="mission-title">舊有傳統的新頁</h3>
-            <p class="mission-text">
-                透過以下數個模組的開發，全面再一次推動舊有人工的產品思維轉換，進入到系統可以更智能、更便利的影響客戶使用，進而延伸到客戶的客戶端體驗，不管在營運上、人力成本上 都可以有進一步的發展。
-            </p>
-        </div>
-        
-        <div class="features-grid">
-            <div class="feature-card">
-                <span class="feature-icon">📈</span>
-                <h3 class="feature-title">新會員升降等設定</h3>
-                <p class="feature-description">玩家不需要登入登出即可更新卡別、透過遊玩時即時更新卡別升降等、時間週期到時,未滿足條件自動降等</p>
-            </div>
-            
-            <div class="feature-card">
-                <span class="feature-icon">🤖</span>
-                <h3 class="feature-title">舊帶新回饋自動化</h3>
-                <p class="feature-description">原本就有的繁複計算流程，系統全面進行自動化並包含領獎功能</p>
-            </div>
-            
-            <div class="feature-card">
-                <span class="feature-icon">🎮</span>
-                <h3 class="feature-title">APP闖關任務卡</h3>
-                <p class="feature-description">人工發放的卡片改為進入APP中，全面減輕店家人力，及提升會員體驗</p>
-            </div>
-            
-            <div class="feature-card clickable" id="requirements-card">
-                <span class="feature-icon">⚡</span>
-                <h3 class="feature-title">現場需求響應</h3>
-                <p class="feature-description">列出目前優先的單子，讓各單位快速進行順序排定及開發</p>
-            </div>
-        </div>
-        
-        <div class="scroll-indicator">
-            ↓ 向下探索專案時程 ↓
-        </div>
-    </section>
-    
-    <section class="timeline-section">
-        <h2 class="timeline-title">專案執行時程</h2>
-        <div class="timeline-container">
-            <div class="timeline-line"></div>
-            
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <div class="timeline-dot"></div>
-                    <h3 class="timeline-phase">🎯 專案啟動</h3>
-                    <p class="timeline-desc">0721 開始，確立專案目標及範圍。</p>
-                </div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <div class="timeline-dot"></div>
-                    <h3 class="timeline-phase">🎮 APP闖關任務卡</h3>
-                    <div class="timeline-period">7月中 ~ 10月初</div>
-                </div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <div class="timeline-dot"></div>
-                    <h3 class="timeline-phase">📊 新會員升降等設定</h3>
-                    <div class="timeline-period">8月初 ~ 9月中</div>
-                </div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <div class="timeline-dot"></div>
-                    <h3 class="timeline-phase">💰 舊帶新回饋自動化計算</h3>
-                    <div class="timeline-period">8月底 ~ 9月底</div>
-                </div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <div class="timeline-dot"></div>
-                    <h3 class="timeline-phase">🔧 現場需求處理</h3>
-                    <div class="timeline-period">9月初 ~ 10月中</div>
-                </div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <div class="timeline-dot"></div>
-                    <h3 class="timeline-phase">🎯 功能收斂</h3>
-                    <div class="timeline-period">10月初</div>
-                    <p class="timeline-desc">不再進測新功能單子，將剩餘單子進行修復</p>
-                </div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <div class="timeline-dot"></div>
-                    <h3 class="timeline-phase">🚀 正式發布</h3>
-                    <div class="timeline-period">11月初</div>
-                    <p class="timeline-desc">系統正式上線，開始為用戶提供全新的數位化體驗</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <script>
-        // Requirements modal functionality
+        // Space debris animation
+        function createDebris() {
+            const debrisContainer = document.getElementById('debris-container');
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const debris = document.createElement('div');
+                    debris.className = 'debris';
+                    debris.style.left = Math.random() * 100 + 'vw';
+                    debris.style.animationDelay = Math.random() * 15 + 's';
+                    debris.style.animationDuration = (15 + Math.random() * 10) + 's';
+                    
+                    debrisContainer.appendChild(debris);
+                    
+                    setTimeout(() => {
+                        if (debris.parentNode) {
+                            debris.remove();
+                        }
+                    }, 25000);
+                }, i * 1000);
+            }
+        }
+        
+        // Start debris animation
+        createDebris();
+        setInterval(createDebris, 20000);
+        
+        // Modal functionality
         const requirementsCard = document.getElementById('requirements-card');
         const modal = document.getElementById('requirementsModal');
         const closeBtn = document.getElementById('closeModal');
         
-        // Open modal when clicking the requirements card
         requirementsCard.addEventListener('click', () => {
             modal.style.display = 'block';
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            document.body.style.overflow = 'hidden';
         });
         
-        // Close modal when clicking close button
         closeBtn.addEventListener('click', () => {
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
         });
         
-        // Close modal when clicking outside of it
         window.addEventListener('click', (event) => {
             if (event.target === modal) {
                 modal.style.display = 'none';
@@ -907,7 +1163,6 @@
             }
         });
         
-        // Close modal with Escape key
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape' && modal.style.display === 'block') {
                 modal.style.display = 'none';
@@ -915,107 +1170,130 @@
             }
         });
         
-        // Enhanced scroll effects
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const rate = scrolled * -0.3;
-            
-            document.querySelector('.background').style.transform = `translate3d(0, ${rate}px, 0)`;
-        });
-        
-        // Scroll-triggered timeline animation with enter/exit effects
-        let timelineAnimationTimeout = {};
-        
-        function animateTimelineOnScroll() {
-            const timelineItems = document.querySelectorAll('.timeline-item');
+        // Level nodes animation on scroll
+        function animateLevels() {
+            const levelNodes = document.querySelectorAll('.level-node');
             const windowHeight = window.innerHeight;
-            const scrollTop = window.pageYOffset;
             
-            timelineItems.forEach((item, index) => {
-                const itemRect = item.getBoundingClientRect();
-                const itemTop = scrollTop + itemRect.top;
-                const itemBottom = itemTop + itemRect.height;
+            levelNodes.forEach((node, index) => {
+                const nodeTop = node.getBoundingClientRect().top;
                 
-                // 更精確的視窗檢測
-                const viewportTop = scrollTop;
-                const viewportBottom = scrollTop + windowHeight;
-                
-                // 檢查元素是否在視窗範圍內（留有緩衝區域）
-                const isInViewport = (itemBottom > viewportTop + 100) && (itemTop < viewportBottom - 100);
-                
-                // 清除之前的timeout
-                if (timelineAnimationTimeout[index]) {
-                    clearTimeout(timelineAnimationTimeout[index]);
-                }
-                
-                if (isInViewport) {
-                    // 元素進入視窗
-                    timelineAnimationTimeout[index] = setTimeout(() => {
-                        item.classList.remove('animate-out');
-                        item.classList.add('animate');
-                    }, index * 40);
-                } else {
-                    // 元素離開視窗
-                    item.classList.remove('animate');
-                    item.classList.add('animate-out');
+                if (nodeTop < windowHeight * 0.8) {
+                    setTimeout(() => {
+                        node.classList.add('active');
+                    }, index * 200);
                 }
             });
         }
         
-        // 監聽滾動事件
-        window.addEventListener('scroll', animateTimelineOnScroll);
+        window.addEventListener('scroll', animateLevels);
+        window.addEventListener('load', animateLevels);
         
-        // 頁面載入時也檢查一次
-        window.addEventListener('load', animateTimelineOnScroll);
+        // Parallax effect for background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const starfield = document.querySelector('.starfield');
+            const nebula = document.querySelector('.nebula');
+            
+            starfield.style.transform = `translateY(${scrolled * 0.5}px)`;
+            nebula.style.transform = `translateY(${scrolled * 0.3}px) scale(${1 + scrolled * 0.0001})`;
+        });
         
-        // Interactive hover effects for feature cards
-        document.querySelectorAll('.feature-card').forEach(card => {
+        // Interactive hover effects for character cards
+        document.querySelectorAll('.character-card').forEach(card => {
             card.addEventListener('mouseenter', () => {
-                card.style.zIndex = '100';
+                card.style.zIndex = '1000';
+                
+                // Add sound effect simulation (visual feedback)
+                const icon = card.querySelector('.character-icon');
+                icon.style.transform = 'scale(1.2) rotateY(15deg)';
             });
             
             card.addEventListener('mouseleave', () => {
-                card.style.zIndex = '1';
+                card.style.zIndex = '10';
+                
+                const icon = card.querySelector('.character-icon');
+                icon.style.transform = 'scale(1) rotateY(0deg)';
             });
         });
         
-        // Dynamic grid animation
-        const gridOverlay = document.querySelector('.grid-overlay');
-        let animationSpeed = 20;
-        
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
+        // Game UI status updates
+        function updateGameStatus() {
+            const healthFill = document.querySelector('.health-fill');
+            const currentWidth = parseInt(healthFill.style.width) || 85;
             
-            animationSpeed = 10 + (x + y) * 20;
-            gridOverlay.style.animationDuration = `${animationSpeed}s`;
-        });
+            // Simulate dynamic status changes
+            const newWidth = Math.max(75, Math.min(100, currentWidth + (Math.random() - 0.5) * 5));
+            healthFill.style.width = newWidth + '%';
+            
+            if (newWidth < 80) {
+                healthFill.style.background = 'linear-gradient(90deg, #ff4040, #ff8080)';
+            } else {
+                healthFill.style.background = 'linear-gradient(90deg, #ff0040, #ff4080)';
+            }
+        }
         
-        // Glitch effect on title
+        setInterval(updateGameStatus, 3000);
+        
+        // Title glitch effect enhancement
         const title = document.querySelector('.main-title');
         const originalText = title.textContent;
+        const glitchTexts = ['T25∅3', 'T2₅0₃', 'T2503̇', '†2503'];
         
         setInterval(() => {
-            if (Math.random() < 0.1) {
-                title.textContent = 'T25∅3';
+            if (Math.random() < 0.15) {
+                const glitchText = glitchTexts[Math.floor(Math.random() * glitchTexts.length)];
+                title.textContent = glitchText;
+                
                 setTimeout(() => {
                     title.textContent = originalText;
-                }, 100);
+                }, 150);
             }
-        }, 3000);
+        }, 4000);
         
-        // Console easter egg
+        // Console easter egg with ASCII art
         console.log(`
-        ████████╗██████╗ ███████╗ ██████╗ ██████╗ 
-        ╚══██╔══╝╚════██╗██╔════╝██╔═████╗╚════██╗
-           ██║    █████╔╝███████╗██║██╔██║ █████╔╝
-           ██║   ██╔═══╝ ╚════██║████╔╝██║██╔═══╝ 
-           ██║   ███████╗███████║╚██████╔╝███████╗
-           ╚═╝   ╚══════╝╚══════╝ ╚═════╝ ╚══════╝
+        ╔═══════════════════════════════════╗
+        ║        T2503 SPACE MISSION        ║
+        ║           SYSTEM ONLINE           ║
+        ╠═══════════════════════════════════╣
+        ║  🚀 Mission Status: ACTIVE        ║
+        ║  🎯 Objectives: 4 MODULES         ║
+        ║  ⚡ Priority: CRITICAL            ║
+        ║  🛸 ETA: NOV 2024                ║
+        ╚═══════════════════════════════════╝
         
-        🚀 Welcome to the future of meeting room management
-        📡 Gama Technology - Digital Revolution
+        Welcome, Commander! 
+        The future of gaming awaits...
         `);
+        
+        // Keyboard shortcuts (Easter eggs)
+        document.addEventListener('keydown', (event) => {
+            // Konami Code: ↑ ↑ ↓ ↓ ← → ← → B A
+            const konamiCode = [
+                'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+                'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+                'KeyB', 'KeyA'
+            ];
+            
+            if (!window.konamiProgress) window.konamiProgress = 0;
+            
+            if (event.code === konamiCode[window.konamiProgress]) {
+                window.konamiProgress++;
+                if (window.konamiProgress === konamiCode.length) {
+                    // Easter egg activated!
+                    document.body.style.filter = 'hue-rotate(180deg)';
+                    setTimeout(() => {
+                        document.body.style.filter = '';
+                    }, 3000);
+                    window.konamiProgress = 0;
+                    console.log('🎮 CHEAT CODE ACTIVATED! 🎮');
+                }
+            } else {
+                window.konamiProgress = 0;
+            }
+        });
     </script>
 </body>
 </html>
+                            <div class="stat
