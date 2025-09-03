@@ -123,19 +123,20 @@
         
         /* Hero Section */
         .hero-section {
-            min-height: 100vh;
+            min-height: 120vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             position: relative;
             text-align: center;
-            padding: 0 20px;
+            padding: 8rem 20px 0;
         }
         
         .game-logo {
             position: relative;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
+            margin-top: 2rem;
         }
         
         .main-title {
@@ -268,7 +269,7 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 3rem;
             max-width: 1400px;
-            margin: 0 auto;
+            margin: 6rem auto 0;
             padding: 0;
             box-sizing: border-box;
         }
@@ -430,7 +431,7 @@
             margin: 4rem 0;
             opacity: 0;
             transform: translateY(50px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .level-node.active {
@@ -1172,7 +1173,7 @@
             }
         });
         
-        // Level nodes animation on scroll
+        // Level nodes animation on scroll - 加速50%
         function animateLevels() {
             const levelNodes = document.querySelectorAll('.level-node');
             const windowHeight = window.innerHeight;
@@ -1183,7 +1184,7 @@
                 if (nodeTop < windowHeight * 0.8) {
                     setTimeout(() => {
                         node.classList.add('active');
-                    }, index * 200);
+                    }, index * 100); // 從 200ms 改為 100ms，加速50%
                 }
             });
         }
@@ -1298,4 +1299,3 @@
     </script>
 </body>
 </html>
-                            <div class="stat
